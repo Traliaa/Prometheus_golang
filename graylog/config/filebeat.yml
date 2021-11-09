@@ -1,0 +1,84 @@
+# filebeat.inputs:
+#   - type: docker
+#     containers:
+#       path: "/usr/share/dockerlogs/data"
+#       stream: "stdout"
+#       ids:
+#         - "*"
+#       cri.parse_flags: true
+#       combine_partial: true
+#       exclude_files: ['\.gz$']
+ 
+# processors:
+#   - add_docker_metadata:
+#       host: "unix:///var/run/docker.sock"
+ 
+# filebeat.config.modules:
+#   path: ${path.config}/modules.d/*.yml
+#   reload.enabled: false
+ 
+# # output.logstash:
+# #   hosts: ["logstash:5044"]
+# output.elasticsearch:
+#   hosts: ["elasticsearch:9200"]
+
+
+# ## X-Pack security credentials
+# #
+# elasticsearch.username: elastic
+# elasticsearch.password: elasticPass
+# # setup.kibana:
+# log files:
+# logging.level: error
+# logging.to_files: false
+# logging.to_syslog: false
+# loggins.metrice.enabled: false
+# logging.files:
+#   path: /var/log/filebeat
+#   name: filebeat
+#   keepfiles: 7
+#   permissions: 0644
+# ssl.verification_mode: none
+
+
+# output.elasticsearch:
+#   hosts: [ "http://elasticsearch:9200" ]
+#   username: elastic
+#   password: elasticPass
+# setup.kibana: [ "http://kibana:5601" ]
+
+
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+      # only containers with co.elastic.logs/enabled: true will be discovered
+      hints.default_config.enabled: false
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+
+
+
+
+#filebeat.inputs:
+#- type: container
+#  paths:
+#    - '/var/lib/docker/containers/*/*.log'
+#
+#processors:
+#- add_docker_metadata:
+#    host: "unix:///var/run/docker.sock"
+#
+#- decode_json_fields:
+#    fields: ["message"]
+#    target: "json"
+#    overwrite_keys: true
+#
+#output.elasticsearch:
+#  hosts: ["elasticsearch:9200"]
+#  indices:
+#    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+#
+#logging.json: true
+#logging.metrics.enabled: false
